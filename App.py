@@ -1,20 +1,20 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-##import urllib.request
+import urllib.request
 from PIL import Image
+from urllib.request import urlopen
     
 data=pd.read_csv('vehicles_us.csv')
     
 st.title('Choose your car')
 st.subheader('Use this app to find the best car for your wants and needs')
-    
-    
 
-    
-##urllib.request.urlretrieve('https://www.usnews.com/object/image/0000017c-e20f-d45b-a97d-fbbf2d5f0000/usedcardealership.jpg?update-time=1692736851803&size=responsive640', "usedcardealership.jpg")
-##image = Image.open("usedcardealership.jpg")
-##st.image(image)
+
+
+urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', "used-cars-for-sale-north-carolina-usa-J388K0.jpg")
+image = Image.open("used-cars-for-sale-north-carolina-usa-J388K0.jpg")
+st.image(image)
     
 st.caption(':red[Choose your parameters here]')
    
@@ -22,7 +22,10 @@ st.caption(':red[Choose your parameters here]')
 price_range = st.slider("What is your price range?",
                             value=(1, 375000))
 actual_range=list(range(price_range[0], price_range[1] + 1))
-    
+
+odo_range = st.slider("What is your odometer range?",
+                            value=(0, 990000))
+actual_range=list(range(odo_range[0], odo_range[1] + 1))    
     
 type_range = st.multiselect("What is your type?",
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
@@ -33,7 +36,7 @@ condition_range = st.multiselect("What is your condition?",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
                            default=['excellent', 'good'])
 
-st.write("Selected conditions:", condition_range)
+##st.write("Selected conditions:", condition_range)
 
 fwd_check=st.checkbox('4 wheel drive')
 
