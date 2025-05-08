@@ -49,10 +49,7 @@ else:
 nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values (except paint_color)') #checkbox for empty values
 if nan_unknown_check:
     filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
-    filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
-    
-    # Filter the data based on user input
-    
+    filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]    
   # Filter the data based on user input
     filtered_data = data[
         (data['type'].isin(type_range)) &
@@ -78,7 +75,7 @@ st.write('Here are your options with a split by price and condition')
 fig2=px.scatter(filtered_data, x='price', y='condition')
 st.plotly_chart(fig2)
 # Creating a top 10 recomended cars from filterd data    
-st.write('Here is the list of reccomended cars include used filters')
+st.write('Here is the list of recomended cars from selected list')
 try:
     top_cars = filtered_data.nsmallest(10, ['price', 'odometer','model_year'])
     st.dataframe(top_cars)
