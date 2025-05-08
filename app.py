@@ -48,8 +48,8 @@ else:
 
 nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values')
 if nan_unknown_check:
-        filtered_data = filtered_data.dropna()
-        filtered_data = filtered_data[~filtered_data.eq('unknown').any(axis=1)]
+    filtered_data = filtered_data.dropna()
+    filtered_data = filtered_data[~filtered_data.isin(['unknown', 'None', 'none']).any(axis=1)]
     
     # Filter the data based on user input
     
