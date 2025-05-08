@@ -30,7 +30,7 @@ odo_range = st.slider("Select desired mileage range?",
 actual_range=list(range(odo_range[0], odo_range[1] + 1))    
     
 #type bar
-type_range = st.multiselect(Select vehicle type", 
+type_range = st.multiselect("Select vehicle type", 
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
                             default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
     
