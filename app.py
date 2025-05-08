@@ -19,26 +19,26 @@ st.image(image)
 st.caption(':red[Choose your parameters here]')
    
  #  create a sidebars for user input   
-price_range = st.slider("What is your price range?", #price slider
+price_range = st.slider("Select desired price range", #price slider
                             value=(1, 375000))
 actual_range=list(range(price_range[0], price_range[1] + 1))
 
-odo_range = st.slider("What is your odometer range?", #odometer slider
+odo_range = st.slider("Select desired mileage range?", #odometer slider
                             value=(0, 990000))
 actual_range=list(range(odo_range[0], odo_range[1] + 1))    
     
-type_range = st.multiselect("What is your type?", #type bar
+type_range = st.multiselect(Select vehicle type", #type bar
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
                             default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
     
     
-condition_range = st.multiselect("What is your condition?", #condition bar
+condition_range = st.multiselect("Select vehicle condition", #condition bar
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
                            default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
 
 ##st.write("Selected conditions:", condition_range)
 
-fwd_check=st.checkbox('4 wheel drive') # checkbox for four whell drive
+fwd_check=st.checkbox('4 wheel drive') # checkbox for four wheel drive
 
 if fwd_check:
     filtered_data=data[data.is_4wd.isin(actual_range)]
@@ -46,7 +46,7 @@ if fwd_check:
 else:
     filtered_data=data[data.is_4wd.isin(actual_range)]
 
-nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values (except paint_color)') #checkbox for empty values
+nan_unknown_check = st.checkbox('Exclude rows with unknown values (except paint_color)') #checkbox for empty values
 if nan_unknown_check:
     filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
     filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]    
@@ -64,15 +64,16 @@ if nan_unknown_check:
         filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
     
     # Display the filtered data
-st.write("Filtered Data:", filtered_data)
+st.write("Filtered cars:", filtered_data)
     
     # Create a bars charts of the filtered data
+    st.write('Here are your options with a split by price and condition')
 fig = px.bar(filtered_data, x='price', y='condition')
 st.plotly_chart(fig)
     
 st.write('Here are your options with a split by price and condition')
     
-fig2=px.scatter(filtered_data, x='price', y='condition')
+fig2=px.scatter(filtered_data, x='model_year', y='price')
 st.plotly_chart(fig2)
 # Creating a top 10 recomended cars from filterd data    
 st.write('Here is the list of recomended cars from selected list')
