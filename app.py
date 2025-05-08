@@ -79,7 +79,7 @@ st.write('Here is the list of reccomended cars include used filters')
 
 st.write('Here is the list of reccomended cars include used filters')
 try:
-    top_cars = filtered_data.nsmallest(10, ['price', 'odometer'])
+    top_cars = filtered_data.nsmallest(10, ['price', 'odometer','model_year'])
     st.dataframe(top_cars)
 except ValueError:
     st.write('No data available for the selected filters.')
