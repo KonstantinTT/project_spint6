@@ -53,12 +53,18 @@ if nan_unknown_check:
     
     # Filter the data based on user input
     
-filtered_data = data[
-     (data['type'].isin(type_range)) &
-     (data['price'].between(price_range[0], price_range[1])) &
-     (data['condition'].isin(condition_range)&
-      (data['is_4wd'] == 1 if fwd_check else True))&
-      (data['nan_unknown_check'] == 1 if fwd_check else True)]
+  # Filter the data based on user input
+    filtered_data = data[
+        (data['type'].isin(type_range)) &
+        (data['price'].between(price_range[0], price_range[1])) &
+        (data['condition'].isin(condition_range)) &
+        (data['is_4wd'] == 1 if fwd_check else True)
+    ]
+
+    # Apply nan_unknown_check filter
+    if nan_unknown_check:
+        filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
+        filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
     
     # Display the filtered data
 st.write("Filtered Data:", filtered_data)
