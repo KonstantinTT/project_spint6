@@ -40,7 +40,7 @@ condition_range = st.multiselect("Select vehicle condition",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
                            default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
 
-##st.write("Selected conditions:", condition_range)
+
 
 fwd_check=st.checkbox('4 wheel drive') # checkbox for four wheel drive
 
