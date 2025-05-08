@@ -71,6 +71,13 @@ st.plotly_chart(fig2)
 #    st.write('No data available for the selected filters.')
 
 st.write('Here is the list of reccomended cars include used filters')
+#st.write('Here is the list of reccomended cars')
+#try:
+#    st.dataframe(filtered_data.sample(40))
+#except ValueError:
+#    st.write('No data available for the selected filters.')
+
+st.write('Here is the list of reccomended cars include used filters')
 try:
     top_10_avg_price = filtered_data.nsmallest(10, 'price')['price'].mean()
     top_10_avg_odometer = filtered_data.nsmallest(10, 'odometer')['odometer'].mean()
