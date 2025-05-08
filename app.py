@@ -71,14 +71,15 @@ if nan_unknown_check:
 st.write("Filtered cars:", filtered_data)
     
     # Create a bars charts of the filtered data
-    st.write('Here are your options with a split by price and condition')
+st.write('Here are your options with a split by price and condition')
 fig = px.bar(filtered_data, x='price', y='condition')
 st.plotly_chart(fig)
     
-st.write('Here are your options with a split by price and condition')
+st.write('Here are your options with a split by model_year and price')
     
 fig2=px.scatter(filtered_data, x='model_year', y='price')
 st.plotly_chart(fig2)
+
 # Creating a top 10 recomended cars from filterd data    
 st.write('Here is the list of recomended cars from selected list')
 try:
