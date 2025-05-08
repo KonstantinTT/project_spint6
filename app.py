@@ -79,11 +79,7 @@ st.write('Here is the list of reccomended cars include used filters')
 
 st.write('Here is the list of reccomended cars include used filters')
 try:
-    top_10_avg_price = filtered_data.nsmallest(10, 'price')['price'].mean()
-    top_10_avg_odometer = filtered_data.nsmallest(10, 'odometer')['odometer'].mean()
-
-    st.write(f"Average price of top 10 cheapest cars: ${top_10_avg_price:.2f}")
-    st.write(f"Average odometer of top 10 cars with lowest mileage: {top_10_avg_odometer:.2f} miles")
-    
+    top_cars = filtered_data.nsmallest(10, ['price', 'odometer'])
+    st.dataframe(top_cars)
 except ValueError:
     st.write('No data available for the selected filters.')
