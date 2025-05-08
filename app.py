@@ -19,20 +19,24 @@ st.image(image)
 st.caption(':red[Choose your parameters here]')
    
  #  create a sidebars for user input   
-price_range = st.slider("Select desired price range", #price slider
+#price slider
+price_range = st.slider("Select desired price range", 
                             value=(1, 375000))
 actual_range=list(range(price_range[0], price_range[1] + 1))
 
-odo_range = st.slider("Select desired mileage range?", #odometer slider
+#odometer slider
+odo_range = st.slider("Select desired mileage range?", 
                             value=(0, 990000))
 actual_range=list(range(odo_range[0], odo_range[1] + 1))    
     
-type_range = st.multiselect(Select vehicle type", #type bar
+#type bar
+type_range = st.multiselect(Select vehicle type", 
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
                             default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
     
     
-condition_range = st.multiselect("Select vehicle condition", #condition bar
+ #condition bar
+condition_range = st.multiselect("Select vehicle condition",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
                            default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
 
