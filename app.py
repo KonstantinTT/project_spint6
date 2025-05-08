@@ -64,8 +64,19 @@ st.write('Here are your options with a split by price and condition')
 fig2=px.scatter(filtered_data, x='price', y='condition')
 st.plotly_chart(fig2)
     
-st.write('Here is the list of reccomended cars')
+#st.write('Here is the list of reccomended cars')
+#try:
+#    st.dataframe(filtered_data.sample(40))
+#except ValueError:
+#    st.write('No data available for the selected filters.')
+
+st.write('Here is the list of reccomended cars include used filters')
 try:
-    st.dataframe(filtered_data.sample(40))
+    top_10_avg_price = filtered_data.nsmallest(10, 'price')['price'].mean()
+    top_10_avg_odometer = filtered_data.nsmallest(10, 'odometer')['odometer'].mean()
+
+    st.write(f"Average price of top 10 cheapest cars: ${top_10_avg_price:.2f}")
+    st.write(f"Average odometer of top 10 cars with lowest mileage: {top_10_avg_odometer:.2f} miles")
+    
 except ValueError:
     st.write('No data available for the selected filters.')
