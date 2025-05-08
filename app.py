@@ -29,12 +29,12 @@ actual_range=list(range(odo_range[0], odo_range[1] + 1))
     
 type_range = st.multiselect("What is your type?",
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
-                            default=['SUV'])
+                            default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
     
     
 condition_range = st.multiselect("What is your condition?",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
-                           default=['excellent', 'good'])
+                           default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
 
 ##st.write("Selected conditions:", condition_range)
 
@@ -45,12 +45,20 @@ if fwd_check:
     filtered_data=filtered_data[filtered_data.is_4wd=='1']
 else:
     filtered_data=data[data.is_4wd.isin(actual_range)]
+
+nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values')
+if nan_unknown_check:
+        filtered_data = filtered_data.dropna()
+        filtered_data = filtered_data[~filtered_data.eq('unknown').any(axis=1)]
+    
     # Filter the data based on user input
+    
 filtered_data = data[
      (data['type'].isin(type_range)) &
      (data['price'].between(price_range[0], price_range[1])) &
      (data['condition'].isin(condition_range)&
-      (data['is_4wd'] == 1 if fwd_check else True))]
+      (data['is_4wd'] == 1 if fwd_check else True))&
+      (data['nan_unknown_check'] == 1 if fwd_check else True)]
     
     # Display the filtered data
 st.write("Filtered Data:", filtered_data)
