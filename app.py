@@ -46,10 +46,10 @@ if fwd_check:
 else:
     filtered_data=data[data.is_4wd.isin(actual_range)]
 
-nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values')
+nan_unknown_check = st.checkbox('Exclude rows with empty or unknown values (except paint_color)')
 if nan_unknown_check:
-    filtered_data = filtered_data.dropna()
-    filtered_data = filtered_data[~filtered_data.isin(['unknown', 'None', 'none']).any(axis=1)]
+    filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
+    filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
     
     # Filter the data based on user input
     
