@@ -13,9 +13,7 @@ def load_data():
 data = load_data()
 
 # Check if the image file already exists to avoid re-downloading
-image_path = "used-cars-for-sale-north-carolina-usa-J388K0.jpg"
-if not os.path.exists(image_path):
-    urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', image_path)
+
     
 st.title('**Filters**')
 st.title('Choose your car')
@@ -23,9 +21,12 @@ st.subheader('Use this app to find the best car for your wants and needs')
 
 
 ## Display the image
+image_path = "used-cars-for-sale-north-carolina-usa-J388K0.jpg"
+if not os.path.exists(image_path):
+    urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', image_path)
 ##urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', "used-cars-for-sale-north-carolina-usa-J388K0.jpg")
 ##image = Image.open("used-cars-for-sale-north-carolina-usa-J388K0.jpg")
-st.image_path(image)
+st.image(image_path)
     
 st.caption(':red[Choose your parameters here]')
    
