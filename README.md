@@ -1,4 +1,14 @@
 # project_spint6
+
+## Comments:
+Replacing missing or unknown values in car listings with the average values from other listings may seem helpful for completing the dataset — but it can slightly distort the information, especially when you're trying to evaluate or compare a specific car.
+For example:
+If an individual car listing is missing its mileage or price, and you fill it with the average from all other listings, the car may appear more attractive or more typical than it actually is — which could lead to misleading conclusions during filtering or decision-making.
+
+This kind of data imputation is useful for general analytics, but for precise filtering and recommendations, it’s often better to exclude incomplete or unknown entries to maintain data integrity and avoid bias.
+
+
+
 https://github.com/KonstantinTT/project_spint6
 
 https://project-spint6-4.onrender.com
