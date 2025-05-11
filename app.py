@@ -90,7 +90,7 @@ st.write(filtered_data)
     
     # Create a bars charts of the filtered data
     
- st.title('**Visualizations**')   
+st.title('**Visualizations**')   
 st.write('Here are your options with a split by price and condition')
 fig = px.bar(filtered_data, x='price', y='condition', title='')
 st.plotly_chart(fig)
