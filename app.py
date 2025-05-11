@@ -4,8 +4,18 @@ import plotly.express as px
 import urllib.request
 from PIL import Image
 from urllib.request import urlopen
+import os
     
-data=pd.read_csv('vehicles_us.csv')
+@st.cache_data
+def load_data():
+    return pd.read_csv('vehicles_us.csv')
+
+data = load_data()
+
+# Check if the image file already exists to avoid re-downloading
+image_path = "used-cars-for-sale-north-carolina-usa-J388K0.jpg"
+if not os.path.exists(image_path):
+    urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', image_path)
     
 st.title('**Filters**')
 st.title('Choose your car')
@@ -13,45 +23,45 @@ st.subheader('Use this app to find the best car for your wants and needs')
 
 
 ## Display the image
-urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', "used-cars-for-sale-north-carolina-usa-J388K0.jpg")
-image = Image.open("used-cars-for-sale-north-carolina-usa-J388K0.jpg")
-st.image(image)
+##urllib.request.urlretrieve('https://c7.alamy.com/comp/J388K0/used-cars-for-sale-north-carolina-usa-J388K0.jpg', "used-cars-for-sale-north-carolina-usa-J388K0.jpg")
+##image = Image.open("used-cars-for-sale-north-carolina-usa-J388K0.jpg")
+st.image_path(image)
     
 st.caption(':red[Choose your parameters here]')
    
  #  create a sidebars for user input   
 #price slider
 price_range = st.slider("Select desired price range", 
-                            value=(1, 375000))
+                            value=(int(data['price'].min()), int(data['price'].max())))
 actual_range=list(range(price_range[0], price_range[1] + 1))
 
 #odometer slider
 odo_range = st.slider("Select desired mileage range?", 
-                            value=(0, 990000))
+                            value=(int(data['odometer'].min()), int(data['odometer'].max())))
 actual_range=list(range(odo_range[0], odo_range[1] + 1))    
     
 #type bar
 type_range = st.multiselect("Select vehicle type", 
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
-                            default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
-                            format_func=lambda x: f"🟩 {x}")
+                            default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
     
     
  #condition bar
 condition_range = st.multiselect("Select vehicle condition",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
-                           default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
-                           format_func=lambda x: f"🟩 {x}")
+                           default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
 
 
 
 fwd_check = st.checkbox('4 wheel drive')  # checkbox for four wheel drive
 
-# Calculate and display the number of rows lost if the checkbox is marked
 if fwd_check:
-    rows_before = len(data)
-    rows_after = len(data[data['is_4wd'] == 1])
-    st.write(f"Marking this checkbox will exclude {rows_before - rows_after} rows.")
+    rows_before_fwd = len(data)
+    filtered_data_temp = data[data['is_4wd'] == 1]
+    rows_after_fwd = len(filtered_data_temp)
+    st.write(f"Marking this checkbox will exclude {rows_before_fwd - rows_after_fwd} rows.")
+
+
 
 if fwd_check:
     filtered_data=data[data.is_4wd.isin(actual_range)]
@@ -67,17 +77,15 @@ if nan_unknown_check:
     filtered_data = data[
         (data['type'].isin(type_range)) &
         (data['condition'].isin(condition_range)) &
-        (data['odometer'].between(odo_range[0], odo_range[1])) &
-        (data['price'].between(price_range[0], price_range[1])) &
+        (data['odometer'].isin(odo_range)) &
+        (data['price'].isin(price_range))) &
         (data['is_4wd'] == 1 if fwd_check else True)
     ]
-    # Calculate and display the number of rows lost if the nan_unknown_check is marked
-    if nan_unknown_check:
-        rows_before_nan = len(filtered_data)
-        filtered_data_temp = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
-        filtered_data_temp = filtered_data_temp[~filtered_data_temp[[col for col in filtered_data_temp.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
-        rows_after_nan = len(filtered_data_temp)
-        st.write(f"Marking this checkbox will exclude {rows_before_nan - rows_after_nan} rows.")
+    rows_before_nan = len(filtered_data)
+    filtered_data_temp = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
+    filtered_data_temp = filtered_data_temp[~filtered_data_temp[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
+    rows_after_nan = len(filtered_data_temp)
+    st.write(f"Marking this checkbox will exclude {rows_before_nan - rows_after_nan} rows.")
     # Apply nan_unknown_check filter
     if nan_unknown_check:
         filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
