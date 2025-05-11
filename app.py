@@ -7,6 +7,7 @@ from urllib.request import urlopen
     
 data=pd.read_csv('vehicles_us.csv')
     
+st.title('**Filters**')
 st.title('Choose your car')
 st.subheader('Use this app to find the best car for your wants and needs')
 
@@ -32,17 +33,25 @@ actual_range=list(range(odo_range[0], odo_range[1] + 1))
 #type bar
 type_range = st.multiselect("Select vehicle type", 
                             options=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
-                            default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'])
+                            default=['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon'],
+                            format_func=lambda x: f"🟩 {x}")
     
     
  #condition bar
 condition_range = st.multiselect("Select vehicle condition",
                            options=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
-                           default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'])
+                           default=['excellent', 'fair', 'good', 'like new', 'new', 'poor', 'salvage'],
+                           format_func=lambda x: f"🟩 {x}")
 
 
 
-fwd_check=st.checkbox('4 wheel drive') # checkbox for four wheel drive
+fwd_check = st.checkbox('4 wheel drive')  # checkbox for four wheel drive
+
+# Calculate and display the number of rows lost if the checkbox is marked
+if fwd_check:
+    rows_before = len(data)
+    rows_after = len(data[data['is_4wd'] == 1])
+    st.write(f"Marking this checkbox will exclude {rows_before - rows_after} rows.")
 
 if fwd_check:
     filtered_data=data[data.is_4wd.isin(actual_range)]
@@ -57,48 +66,59 @@ if nan_unknown_check:
   # Filter the data based on user input
     filtered_data = data[
         (data['type'].isin(type_range)) &
-        (data['price'].between(price_range[0], price_range[1])) &
         (data['condition'].isin(condition_range)) &
         (data['odometer'].between(odo_range[0], odo_range[1])) &
+        (data['price'].between(price_range[0], price_range[1])) &
         (data['is_4wd'] == 1 if fwd_check else True)
     ]
-
+    # Calculate and display the number of rows lost if the nan_unknown_check is marked
+    if nan_unknown_check:
+        rows_before_nan = len(filtered_data)
+        filtered_data_temp = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
+        filtered_data_temp = filtered_data_temp[~filtered_data_temp[[col for col in filtered_data_temp.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
+        rows_after_nan = len(filtered_data_temp)
+        st.write(f"Marking this checkbox will exclude {rows_before_nan - rows_after_nan} rows.")
     # Apply nan_unknown_check filter
     if nan_unknown_check:
         filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
         filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
-    
+ 
+ 
+st.title('**Filtered cars**')
     # Display the filtered data
-st.write("Filtered cars:", filtered_data)
+st.write(filtered_data)
     
     # Create a bars charts of the filtered data
+    
+ st.title('**Visualizations**')   
 st.write('Here are your options with a split by price and condition')
-fig = px.bar(filtered_data, x='price', y='condition')
+fig = px.bar(filtered_data, x='price', y='condition', title='')
 st.plotly_chart(fig)
     
 st.write('Here are your options with a split by model_year and price')
     
 # Create a histogram for price distribution
 st.write('Price distribution of the filtered cars')
-fig2 = px.histogram(filtered_data, x='price', nbins=30, title='Price Distribution')
+fig2 = px.histogram(filtered_data, x='price', nbins=30, title='')
 st.plotly_chart(fig2)
 
 # Create a histogram for odometer distribution
 st.write('Odometer distribution of the filtered cars')
-fig3 = px.histogram(filtered_data, x='odometer', nbins=30, title='Odometer Distribution')
+fig3 = px.histogram(filtered_data, x='odometer', nbins=30, title='')
 st.plotly_chart(fig3)
 
 # Create a scatter plot for price vs. odometer
 st.write('Scatter plot of Price vs Odometer')
-fig4 = px.scatter(filtered_data, x='odometer', y='price', title='Price vs Odometer')
+fig4 = px.scatter(filtered_data, x='odometer', y='price', title='')
 st.plotly_chart(fig4)
 
 # Create a scatter plot for model_year vs. price
 st.write('Scatter plot of Model Year vs Price')
-fig5 = px.scatter(filtered_data, x='model_year', y='price', title='Model Year vs Price')
+fig5 = px.scatter(filtered_data, x='model_year', y='price', title='')
 st.plotly_chart(fig5)
 
-# Creating a top 10 recomended cars from filterd data    
+# Creating a top 10 recomended cars from filterd data  
+ st.title('Recomendations')     
 st.write('Here is the list of recomended cars from selected list')
 try:
     top_cars = filtered_data.nsmallest(10, ['price', 'odometer','model_year'])
