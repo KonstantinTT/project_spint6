@@ -59,6 +59,7 @@ if nan_unknown_check:
         (data['type'].isin(type_range)) &
         (data['price'].between(price_range[0], price_range[1])) &
         (data['condition'].isin(condition_range)) &
+        (data['odometer'].between(odo_range[0], odo_range[1])) &
         (data['is_4wd'] == 1 if fwd_check else True)
     ]
 
@@ -77,8 +78,25 @@ st.plotly_chart(fig)
     
 st.write('Here are your options with a split by model_year and price')
     
-fig2=px.scatter(filtered_data, x='model_year', y='price')
+# Create a histogram for price distribution
+st.write('Price distribution of the filtered cars')
+fig2 = px.histogram(filtered_data, x='price', nbins=30, title='Price Distribution')
 st.plotly_chart(fig2)
+
+# Create a histogram for odometer distribution
+st.write('Odometer distribution of the filtered cars')
+fig3 = px.histogram(filtered_data, x='odometer', nbins=30, title='Odometer Distribution')
+st.plotly_chart(fig3)
+
+# Create a scatter plot for price vs. odometer
+st.write('Scatter plot of Price vs Odometer')
+fig4 = px.scatter(filtered_data, x='odometer', y='price', title='Price vs Odometer')
+st.plotly_chart(fig4)
+
+# Create a scatter plot for model_year vs. price
+st.write('Scatter plot of Model Year vs Price')
+fig5 = px.scatter(filtered_data, x='model_year', y='price', title='Model Year vs Price')
+st.plotly_chart(fig5)
 
 # Creating a top 10 recomended cars from filterd data    
 st.write('Here is the list of recomended cars from selected list')
