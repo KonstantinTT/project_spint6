@@ -56,32 +56,35 @@ condition_range = st.multiselect("Select vehicle condition",
 
 fwd_check = st.checkbox('4 wheel drive')  # checkbox for four wheel drive
 
+# Filter the data based on user input
+filtered_data = data[
+    (data['price'].between(price_range[0], price_range[1])) &
+    (data['odometer'].between(odo_range[0], odo_range[1])) &
+    (data['type'].isin(type_range)) &
+    (data['condition'].isin(condition_range))
+]
+
 if fwd_check:
-    rows_before_fwd = len(data)
-    filtered_data_temp = data[data['is_4wd'] == 1]
-    rows_after_fwd = len(filtered_data_temp)
+    rows_before_fwd = len(filtered_data)
+    filtered_data = filtered_data[filtered_data['is_4wd'] == 1]
+    rows_after_fwd = len(filtered_data)
     st.write(f"Marking this checkbox will exclude {rows_before_fwd - rows_after_fwd} rows.")
 
-
-
-if fwd_check:
-    filtered_data=data[data.is_4wd.isin(actual_range)]
-    filtered_data=filtered_data[filtered_data.is_4wd=='1']
-else:
-    filtered_data=data[data.is_4wd.isin(actual_range)]
-
-nan_unknown_check = st.checkbox('Exclude rows with unknown values (except paint_color)') #checkbox for empty values
+nan_unknown_check = st.checkbox('Exclude rows with unknown values (except paint_color)')  # checkbox for empty values
 if nan_unknown_check:
+    rows_before_nan = len(filtered_data)
     filtered_data = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
-    filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]    
-  # Filter the data based on user input
-    filtered_data = data[
-        (data['type'].isin(type_range)) &
-        (data['condition'].isin(condition_range)) &
-        (data['odometer'].isin(odo_range)) &
-        (data['price'].isin(price_range)) &
-        (data['is_4wd'] == 1 if fwd_check else True)
-    ]
+    filtered_data = filtered_data[~filtered_data[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
+    rows_after_nan = len(filtered_data)
+    st.write(f"Marking this checkbox will exclude {rows_before_nan - rows_after_nan} rows.")
+
+# Ensure the filtered data always respects the user-selected ranges
+filtered_data = filtered_data[
+    (filtered_data['price'].between(price_range[0], price_range[1])) &
+    (filtered_data['odometer'].between(odo_range[0], odo_range[1])) &
+    (filtered_data['type'].isin(type_range)) &
+    (filtered_data['condition'].isin(condition_range))
+]
     rows_before_nan = len(filtered_data)
     filtered_data_temp = filtered_data.dropna(subset=[col for col in filtered_data.columns if col != 'paint_color'])
     filtered_data_temp = filtered_data_temp[~filtered_data_temp[[col for col in filtered_data.columns if col != 'paint_color']].isin(['unknown', 'None', 'none']).any(axis=1)]
@@ -128,9 +131,20 @@ st.plotly_chart(fig5)
 
 # Creating a top 10 recomended cars from filterd data  
 st.title('Recomendations')     
-st.write('Here is the list of recomended cars from selected list')
-try:
-    top_cars = filtered_data.nsmallest(10, ['price', 'odometer','model_year'])
-    st.dataframe(top_cars)
-except ValueError:
+st.write('Here is the list of recommended cars from the selected list')
+if not filtered_data.empty:
+    try:
+        # Ensure the filtered data respects the user-selected ranges
+        filtered_data = filtered_data[
+            (filtered_data['price'].between(price_range[0], price_range[1])) &
+            (filtered_data['odometer'].between(odo_range[0], odo_range[1])) &
+            (filtered_data['type'].isin(type_range)) &
+            (filtered_data['condition'].isin(condition_range))
+        ]
+        top_cars = filtered_data.nsmallest(10, ['price', 'odometer', 'model_year'])
+        st.dataframe(top_cars)
+    except ValueError:
+        st.write('Error occurred while processing the data.')
+else:
+    st.write('No data available for the selected filters.')
     st.write('No data available for the selected filters.')
