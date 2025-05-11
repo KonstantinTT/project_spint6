@@ -78,7 +78,7 @@ if nan_unknown_check:
         (data['type'].isin(type_range)) &
         (data['condition'].isin(condition_range)) &
         (data['odometer'].isin(odo_range)) &
-        (data['price'].isin(price_range))) &
+        (data['price'].isin(price_range)) &
         (data['is_4wd'] == 1 if fwd_check else True)
     ]
     rows_before_nan = len(filtered_data)
