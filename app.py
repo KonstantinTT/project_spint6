@@ -118,7 +118,7 @@ fig5 = px.scatter(filtered_data, x='model_year', y='price', title='')
 st.plotly_chart(fig5)
 
 # Creating a top 10 recomended cars from filterd data  
- st.title('Recomendations')     
+st.title('Recomendations')     
 st.write('Here is the list of recomended cars from selected list')
 try:
     top_cars = filtered_data.nsmallest(10, ['price', 'odometer','model_year'])
