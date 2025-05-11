@@ -65,18 +65,10 @@ if fwd_check:
 
 
 if fwd_check:
-    filtered_data = data[(data.is_4wd.isin(actual_range)) & 
-        (data['type'].isin(type_range)) &
-        (data['condition'].isin(condition_range)) &
-        (data['odometer'].isin(odo_range)) &
-        (data['price'].isin(price_range))]
-    filtered_data = filtered_data[filtered_data.is_4wd == '1']
+    filtered_data=data[data.is_4wd.isin(actual_range)]
+    filtered_data=filtered_data[filtered_data.is_4wd=='1']
 else:
-    filtered_data = data[(data.is_4wd.isin(actual_range)) & 
-        (data['type'].isin(type_range)) &
-        (data['condition'].isin(condition_range)) &
-        (data['odometer'].isin(odo_range)) &
-        (data['price'].isin(price_range))]
+    filtered_data=data[data.is_4wd.isin(actual_range)]
 
 nan_unknown_check = st.checkbox('Exclude rows with unknown values (except paint_color)') #checkbox for empty values
 if nan_unknown_check:
